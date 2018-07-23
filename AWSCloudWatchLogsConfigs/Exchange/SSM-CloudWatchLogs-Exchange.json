@@ -1,0 +1,338 @@
+{
+  "schemaVersion": "2.0",
+  "description": "Export metrics and log files from your instances to Amazon CloudWatch.",
+  "parameters": {
+    "status": {
+      "type": "String",
+      "default": "Enabled",
+      "description": "(Optional) Enable or disable CloudWatch. Valid values: Enabled | Disabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ]
+    }
+  },
+  "mainSteps": [
+    {
+      "action": "aws:cloudWatch",
+      "name": "configureCloudWatch",
+      "settings": {
+        "startType": "{{ status }}"
+      },
+      "inputs": {
+        "EngineConfiguration": {
+          "PollInterval": "00:00:05",
+          "Components": [
+            {
+              "Id": "ApplicationEventLog",
+              "FullName": "AWS.EC2.Windows.CloudWatch.EventLog.EventLogInputComponent,AWS.EC2.Windows.CloudWatch",
+              "Parameters": {
+                "LogName": "Application",
+                "Levels": "7"
+              }
+            },
+            {
+              "Id": "SystemEventLog",
+              "FullName": "AWS.EC2.Windows.CloudWatch.EventLog.EventLogInputComponent,AWS.EC2.Windows.CloudWatch",
+              "Parameters": {
+                "LogName": "System",
+                "Levels": "7"
+              }
+            },
+            {
+              "Id": "SecurityEventLog",
+              "FullName": "AWS.EC2.Windows.CloudWatch.EventLog.EventLogInputComponent,AWS.EC2.Windows.CloudWatch",
+              "Parameters": {
+                "LogName": "Security",
+                "Levels": "7"
+              }
+            },
+            {
+              "Id": "PerformanceCounterMemory",
+              "FullName": "AWS.EC2.Windows.CloudWatch.PerformanceCounterComponent.PerformanceCounterInputComponent,AWS.EC2.Windows.CloudWatch",
+              "Parameters": {
+                "CategoryName": "Memory",
+                "CounterName": "Available MBytes",
+                "InstanceName": "",
+                "MetricName": "AvailableMemory",
+                "Unit": "Megabytes",
+                "DimensionName": "InstanceId",
+                "DimensionValue": "{instance_id}"
+              }
+            },
+            {
+              "Id": "PerformanceCounterDisk",
+              "FullName": "AWS.EC2.Windows.CloudWatch.PerformanceCounterComponent.PerformanceCounterInputComponent,AWS.EC2.Windows.CloudWatch",
+              "Parameters": {
+                "CategoryName": "LogicalDisk",
+                "CounterName": "Free Megabytes",
+                "InstanceName": "C:",
+                "MetricName": "FreeDisk",
+                "Unit": "Megabytes",
+                "DimensionName": "InstanceId",
+                "DimensionValue": "{instance_id}"
+              }
+            },
+            {
+              "Id": "PerfMonExchangeDNSQuery",
+              "FullName": "AWS.EC2.Windows.CloudWatch.PerformanceCounterComponent.PerformanceCounterInputComponent,AWS.EC2.Windows.CloudWatch",
+              "Parameters": {
+                "CategoryName": "MSExchange ADAccess Global Counters",
+                "CounterName": "DNS Query Duration Time",
+                "InstanceName": "",
+                "MetricName": "DNS Query Duration Time",
+                "Unit": "Milliseconds",
+                "DimensionName": "InstanceId",
+                "DimensionValue": "{instance_id}"
+              }
+            },
+            {
+              "Id": "PerfMonExchangeLogStallsIS",
+              "FullName": "AWS.EC2.Windows.CloudWatch.PerformanceCounterComponent.PerformanceCounterInputComponent,AWS.EC2.Windows.CloudWatch",
+              "Parameters": {
+                "CategoryName": "MSExchange Database",
+                "CounterName": "Log Record Stalls/sec",
+                "InstanceName": "Information Store",
+                "MetricName": "Log Record Stalls - Information Store",
+                "Unit": "Count/Second",
+                "DimensionName": "InstanceId",
+                "DimensionValue": "{instance_id}"
+              }
+            },
+            {
+              "Id": "PerfMonExchangeSmtpAvailability",
+              "FullName": "AWS.EC2.Windows.CloudWatch.PerformanceCounterComponent.PerformanceCounterInputComponent,AWS.EC2.Windows.CloudWatch",
+              "Parameters": {
+                "CategoryName": "MSExchange Delivery SmtpAvailability",
+                "CounterName": "% Availability",
+                "InstanceName": "default mailbox delivery",
+                "MetricName": "SMTP Availability",
+                "Unit": "Percent",
+                "DimensionName": "InstanceId",
+                "DimensionValue": "{instance_id}"
+              }
+            },
+            {
+              "Id": "PerfMonExchangeHttpDelivery",
+              "FullName": "AWS.EC2.Windows.CloudWatch.PerformanceCounterComponent.PerformanceCounterInputComponent,AWS.EC2.Windows.CloudWatch",
+              "Parameters": {
+                "CategoryName": "MSExchange Http Delivery",
+                "CounterName": "Requests failed within last minute",
+                "InstanceName": "_Total",
+                "MetricName": "HTTP Delivery Failures",
+                "Unit": "Count",
+                "DimensionName": "InstanceId",
+                "DimensionValue": "{instance_id}"
+              }
+            },
+            {
+              "Id": "PerfMonExchangeReplQueue",
+              "FullName": "AWS.EC2.Windows.CloudWatch.PerformanceCounterComponent.PerformanceCounterInputComponent,AWS.EC2.Windows.CloudWatch",
+              "Parameters": {
+                "CategoryName": "MSExchange Replication",
+                "CounterName": "CopyQueueLength",
+                "InstanceName": "_Total",
+                "MetricName": "Replication Copy Queue Length",
+                "Unit": "Count",
+                "DimensionName": "InstanceId",
+                "DimensionValue": "{instance_id}"
+              }
+            },
+            {
+              "Id": "PerfMonExchangeReplFailed",
+              "FullName": "AWS.EC2.Windows.CloudWatch.PerformanceCounterComponent.PerformanceCounterInputComponent,AWS.EC2.Windows.CloudWatch",
+              "Parameters": {
+                "CategoryName": "MSExchange Replication",
+                "CounterName": "Failed",
+                "InstanceName": "_Total",
+                "MetricName": "Replication Failed or Suspended",
+                "Unit": "Count",
+                "DimensionName": "InstanceId",
+                "DimensionValue": "{instance_id}"
+              }
+            },
+            {
+              "Id": "PerfMonExchangeReplFailedAndSuspended",
+              "FullName": "AWS.EC2.Windows.CloudWatch.PerformanceCounterComponent.PerformanceCounterInputComponent,AWS.EC2.Windows.CloudWatch",
+              "Parameters": {
+                "CategoryName": "MSExchange Replication",
+                "CounterName": "FailedSuspended",
+                "InstanceName": "_Total",
+                "MetricName": "Replication Failed or Suspended",
+                "Unit": "Count",
+                "DimensionName": "InstanceId",
+                "DimensionValue": "{instance_id}"
+              }
+            },
+            {
+              "Id": "PerfMonExchangeTransportResolverFailures",
+              "FullName": "AWS.EC2.Windows.CloudWatch.PerformanceCounterComponent.PerformanceCounterInputComponent,AWS.EC2.Windows.CloudWatch",
+              "Parameters": {
+                "CategoryName": "MSExchangeTransport Delivery Failures",
+                "CounterName": "Resolver: Total Delivery Failures",
+                "InstanceName": "",
+                "MetricName": "Transport Resolver Delivery Failures",
+                "Unit": "Count",
+                "DimensionName": "InstanceId",
+                "DimensionValue": "{instance_id}"
+              }
+            },
+            {
+              "Id": "PerfMonExchangeTransportRoutingFailures",
+              "FullName": "AWS.EC2.Windows.CloudWatch.PerformanceCounterComponent.PerformanceCounterInputComponent,AWS.EC2.Windows.CloudWatch",
+              "Parameters": {
+                "CategoryName": "MSExchangeTransport Delivery Failures",
+                "CounterName": "Routing: Total Delivery Failures",
+                "InstanceName": "",
+                "MetricName": "Transport Routing Delivery Failures",
+                "Unit": "Count",
+                "DimensionName": "InstanceId",
+                "DimensionValue": "{instance_id}"
+              }
+            },
+            {
+              "Id": "PerfMonExchangeTransportQueueMailbox",
+              "FullName": "AWS.EC2.Windows.CloudWatch.PerformanceCounterComponent.PerformanceCounterInputComponent,AWS.EC2.Windows.CloudWatch",
+              "Parameters": {
+                "CategoryName": "MSExchangeTransport Queues",
+                "CounterName": "Active Mailbox Delivery Queue Length",
+                "InstanceName": "_Total",
+                "MetricName": "Queue - Active Mailbox",
+                "Unit": "Count",
+                "DimensionName": "InstanceId",
+                "DimensionValue": "{instance_id}"
+              }
+            },
+            {
+              "Id": "PerfMonExchangeTransportQueueExternal",
+              "FullName": "AWS.EC2.Windows.CloudWatch.PerformanceCounterComponent.PerformanceCounterInputComponent,AWS.EC2.Windows.CloudWatch",
+              "Parameters": {
+                "CategoryName": "MSExchangeTransport Queues",
+                "CounterName": "External Aggregate Delivery Queue Length (All External Queues)",
+                "InstanceName": "_Total",
+                "MetricName": "Queue - External",
+                "Unit": "Count",
+                "DimensionName": "InstanceId",
+                "DimensionValue": "{instance_id}"
+              }
+            },
+            {
+              "Id": "PerfMonExchangeTransportQueueInternal",
+              "FullName": "AWS.EC2.Windows.CloudWatch.PerformanceCounterComponent.PerformanceCounterInputComponent,AWS.EC2.Windows.CloudWatch",
+              "Parameters": {
+                "CategoryName": "MSExchangeTransport Queues",
+                "CounterName": "Internal Aggregate Delivery Queue Length (All Internal Queues)",
+                "InstanceName": "_Total",
+                "MetricName": "Queue - Internal",
+                "Unit": "Count",
+                "DimensionName": "InstanceId",
+                "DimensionValue": "{instance_id}"
+              }
+            },
+            {
+              "Id": "PerfMonExchangeTransportQueueDeliveryItems",
+              "FullName": "AWS.EC2.Windows.CloudWatch.PerformanceCounterComponent.PerformanceCounterInputComponent,AWS.EC2.Windows.CloudWatch",
+              "Parameters": {
+                "CategoryName": "MSExchangeTransport Queues",
+                "CounterName": "Items Queued For Delivery Total",
+                "InstanceName": "_Total",
+                "MetricName": "Queue - Items",
+                "Unit": "Count",
+                "DimensionName": "InstanceId",
+                "DimensionValue": "{instance_id}"
+              }
+            },
+            {
+              "Id": "PerfMonExchangeTransportQueueDeliveryMessages",
+              "FullName": "AWS.EC2.Windows.CloudWatch.PerformanceCounterComponent.PerformanceCounterInputComponent,AWS.EC2.Windows.CloudWatch",
+              "Parameters": {
+                "CategoryName": "MSExchangeTransport Queues",
+                "CounterName": "Messages Queued For Delivery Total",
+                "InstanceName": "_Total",
+                "MetricName": "Queue - Messages",
+                "Unit": "Count",
+                "DimensionName": "InstanceId",
+                "DimensionValue": "{instance_id}"
+              }
+            },
+            {
+              "Id": "PerfMonExchangeTransportQueueDeliveryUnreachable",
+              "FullName": "AWS.EC2.Windows.CloudWatch.PerformanceCounterComponent.PerformanceCounterInputComponent,AWS.EC2.Windows.CloudWatch",
+              "Parameters": {
+                "CategoryName": "MSExchangeTransport Queues",
+                "CounterName": "Unreachable Queue Length",
+                "InstanceName": "_Total",
+                "MetricName": "Queue - Unreachable",
+                "Unit": "Count",
+                "DimensionName": "InstanceId",
+                "DimensionValue": "{instance_id}"
+              }
+            },
+            {
+              "Id": "CloudWatchPerf",
+              "FullName": "AWS.EC2.Windows.CloudWatch.CloudWatch.CloudWatchOutputComponent,AWS.EC2.Windows.CloudWatch",
+              "Parameters": {
+                "AccessKey": "",
+                "SecretKey": "",
+                "Region": "us-east-1",
+                "NameSpace": "AWS/EC2"
+              }
+            },
+            {
+              "Id": "CloudWatchLogsSecurity",
+              "FullName": "AWS.EC2.Windows.CloudWatch.CloudWatchLogsOutput,AWS.EC2.Windows.CloudWatch",
+              "Parameters": {
+                "AccessKey": "",
+                "SecretKey": "",
+                "Region": "us-east-1",
+                "LogGroup": "Security",
+                "LogStream": "{instance_id}"
+              }
+            },
+            {
+              "Id": "CloudWatchLogsSystem",
+              "FullName": "AWS.EC2.Windows.CloudWatch.CloudWatchLogsOutput,AWS.EC2.Windows.CloudWatch",
+              "Parameters": {
+                "AccessKey": "",
+                "SecretKey": "",
+                "Region": "us-east-1",
+                "LogGroup": "System",
+                "LogStream": "{instance_id}"
+              }
+            },
+            {
+              "Id": "CloudWatchLogsApplication",
+              "FullName": "AWS.EC2.Windows.CloudWatch.CloudWatchLogsOutput,AWS.EC2.Windows.CloudWatch",
+              "Parameters": {
+                "AccessKey": "",
+                "SecretKey": "",
+                "Region": "us-east-1",
+                "LogGroup": "Application",
+                "LogStream": "{instance_id}"
+              }
+            },
+            {
+              "Id": "CloudWatchExchange",
+              "FullName": "AWS.EC2.Windows.CloudWatch.CloudWatch.CloudWatchOutputComponent,AWS.EC2.Windows.CloudWatch",
+              "Parameters": {
+                "AccessKey": "",
+                "SecretKey": "",
+                "Region": "us-east-1",
+                "NameSpace": "Windows/Exchange"
+              }
+            }
+          ],
+          "Flows": {
+            "Flows": [
+              "(ApplicationEventLog), CloudWatchLogsApplication",
+              "(SystemEventLog), CloudWatchLogsSystem",
+              "(SecurityEventLog), CloudWatchLogsSecurity",
+              "(PerformanceCounterMemory,PerformanceCounterDisk), CloudWatchPerf",
+              "(PerfMonExchangeDNSQuery,PerfMonExchangeLogStallsIS,PerfMonExchangeSmtpAvailability,PerfMonExchangeHttpDelivery,PerfMonExchangeReplQueue,PerfMonExchangeReplFailed,PerfMonExchangeReplFailedAndSuspended,PerfMonExchangeTransportResolverFailures,PerfMonExchangeTransportRoutingFailures,PerfMonExchangeTransportQueueMailbox,PerfMonExchangeTransportQueueExternal,PerfMonExchangeTransportQueueInternal,PerfMonExchangeTransportQueueDeliveryItems,PerfMonExchangeTransportQueueDeliveryMessages,PerfMonExchangeTransportQueueDeliveryUnreachable), CloudWatchExchange"
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

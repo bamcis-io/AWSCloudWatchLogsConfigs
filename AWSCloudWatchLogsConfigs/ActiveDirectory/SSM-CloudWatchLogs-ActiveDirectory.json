@@ -1,0 +1,182 @@
+{
+  "schemaVersion": "2.2",
+  "description": "Export metrics and log files from your instances to Amazon CloudWatch.",
+  "parameters": {
+    "status": {
+      "type": "String",
+      "default": "Enabled",
+      "description": "(Optional) Enable or disable CloudWatch. Valid values: Enabled | Disabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ]
+    }
+  },
+  "mainSteps": [
+    {
+      "action": "aws:cloudWatch",
+      "name": "configureCloudWatch",
+      "settings": {
+        "startType": "{{ status }}"
+      },
+      "inputs": {
+        "EngineConfiguration": {
+          "PollInterval": "00:00:05",
+          "Components": [
+            {
+              "Id": "ApplicationEventLog",
+              "FullName": "AWS.EC2.Windows.CloudWatch.EventLog.EventLogInputComponent,AWS.EC2.Windows.CloudWatch",
+              "Parameters": {
+                "LogName": "Application",
+                "Levels": "7"
+              }
+            },
+            {
+              "Id": "SystemEventLog",
+              "FullName": "AWS.EC2.Windows.CloudWatch.EventLog.EventLogInputComponent,AWS.EC2.Windows.CloudWatch",
+              "Parameters": {
+                "LogName": "System",
+                "Levels": "7"
+              }
+            },
+            {
+              "Id": "SecurityEventLog",
+              "FullName": "AWS.EC2.Windows.CloudWatch.EventLog.EventLogInputComponent,AWS.EC2.Windows.CloudWatch",
+              "Parameters": {
+                "LogName": "Security",
+                "Levels": "7"
+              }
+            },
+            {
+              "Id": "PerformanceCounterMemory",
+              "FullName": "AWS.EC2.Windows.CloudWatch.PerformanceCounterComponent.PerformanceCounterInputComponent,AWS.EC2.Windows.CloudWatch",
+              "Parameters": {
+                "CategoryName": "Memory",
+                "CounterName": "Available MBytes",
+                "InstanceName": "",
+                "MetricName": "AvailableMemory",
+                "Unit": "Megabytes",
+                "DimensionName": "InstanceId",
+                "DimensionValue": "{instance_id}"
+              }
+            },
+            {
+              "Id": "PerformanceCounterDisk",
+              "FullName": "AWS.EC2.Windows.CloudWatch.PerformanceCounterComponent.PerformanceCounterInputComponent,AWS.EC2.Windows.CloudWatch",
+              "Parameters": {
+                "CategoryName": "LogicalDisk",
+                "CounterName": "Free Megabytes",
+                "InstanceName": "C:",
+                "MetricName": "FreeDisk",
+                "Unit": "Megabytes",
+                "DimensionName": "InstanceId",
+                "DimensionValue": "{instance_id}"
+              }
+            },
+            {
+              "Id": "PerformanceCounterDRAInboundFullSyncObjectsRemaining",
+              "FullName": "AWS.EC2.Windows.CloudWatch.PerformanceCounterComponent.PerformanceCounterInputComponent,AWS.EC2.Windows.CloudWatch",
+              "Parameters": {
+                "CategoryName": "DirectoryServices",
+                "CounterName": "DRA Inbound Full Sync Objects Remaining",
+                "InstanceName": "NTDS",
+                "MetricName": "DRAInboundFullSyncObjectsRemaining",
+                "Unit": "Count",
+                "DimensionName": "InstanceId",
+                "DimensionValue": "{instance_id}"
+              }
+            },
+            {
+              "Id": "PerformanceCounterDRAPendingReplicationOperations",
+              "FullName": "AWS.EC2.Windows.CloudWatch.PerformanceCounterComponent.PerformanceCounterInputComponent,AWS.EC2.Windows.CloudWatch",
+              "Parameters": {
+                "CategoryName": "DirectoryServices",
+                "CounterName": "DRA Pending Replication Operations",
+                "InstanceName": "NTDS",
+                "MetricName": "DRAPendingReplicationOperations",
+                "Unit": "Count",
+                "DimensionName": "InstanceId",
+                "DimensionValue": "{instance_id}"
+              }
+            },
+            {
+              "Id": "PerformanceCounterDRAPendingReplicationSynchronizations",
+              "FullName": "AWS.EC2.Windows.CloudWatch.PerformanceCounterComponent.PerformanceCounterInputComponent,AWS.EC2.Windows.CloudWatch",
+              "Parameters": {
+                "CategoryName": "DirectoryServices",
+                "CounterName": "DRA Pending Replication Synchronizations",
+                "InstanceName": "NTDS",
+                "MetricName": "DRAPendingReplicationSynchronizations",
+                "Unit": "Count",
+                "DimensionName": "InstanceId",
+                "DimensionValue": "{instance_id}"
+              }
+            },
+            {
+              "Id": "CloudWatchPerf",
+              "FullName": "AWS.EC2.Windows.CloudWatch.CloudWatch.CloudWatchOutputComponent,AWS.EC2.Windows.CloudWatch",
+              "Parameters": {
+                "AccessKey": "",
+                "SecretKey": "",
+                "Region": "{{global:REGION}}",
+                "NameSpace": "AWS/EC2"
+              }
+            },
+            {
+              "Id": "CloudWatchLogsSecurity",
+              "FullName": "AWS.EC2.Windows.CloudWatch.CloudWatchLogsOutput,AWS.EC2.Windows.CloudWatch",
+              "Parameters": {
+                "AccessKey": "",
+                "SecretKey": "",
+                "Region": "{{global:REGION}}",
+                "LogGroup": "Security",
+                "LogStream": "{instance_id}"
+              }
+            },
+            {
+              "Id": "CloudWatchLogsSystem",
+              "FullName": "AWS.EC2.Windows.CloudWatch.CloudWatchLogsOutput,AWS.EC2.Windows.CloudWatch",
+              "Parameters": {
+                "AccessKey": "",
+                "SecretKey": "",
+                "Region": "{{global:REGION}}",
+                "LogGroup": "System",
+                "LogStream": "{instance_id}"
+              }
+            },
+            {
+              "Id": "CloudWatchLogsApplication",
+              "FullName": "AWS.EC2.Windows.CloudWatch.CloudWatchLogsOutput,AWS.EC2.Windows.CloudWatch",
+              "Parameters": {
+                "AccessKey": "",
+                "SecretKey": "",
+                "Region": "{{global:REGION}}",
+                "LogGroup": "Application",
+                "LogStream": "{instance_id}"
+              }
+            },
+            {
+              "Id": "CloudWatchActiveDirectory",
+              "FullName": "AWS.EC2.Windows.CloudWatch.CloudWatch.CloudWatchOutputComponent,AWS.EC2.Windows.CloudWatch",
+              "Parameters": {
+                "AccessKey": "",
+                "SecretKey": "",
+                "Region": "{{global:REGION}}",
+                "NameSpace": "Windows/ActiveDirectory"
+              }
+            }
+          ],
+          "Flows": {
+            "Flows": [
+              "(ApplicationEventLog), CloudWatchLogsApplication",
+              "(SystemEventLog), CloudWatchLogsSystem",
+              "(SecurityEventLog), CloudWatchLogsSecurity",
+              "(PerformanceCounterMemory,PerformanceCounterDisk), CloudWatchPerf",
+              "(PerformanceCounterDRAInboundFullSyncObjectsRemaining,PerformanceCounterDRAPendingReplicationOperations,PerformanceCounterDRAPendingReplicationSynchronizations), CloudWatchActiveDirectory"
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

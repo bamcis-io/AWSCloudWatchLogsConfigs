@@ -6,7 +6,8 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>MyApplication</RootNamespace>
     <AssemblyName>MyApplication</AssemblyName>
-    <Name>CloudWatchLogsConfigs</Name>
+    <Name>AWSCloudWatchLogsConfigs</Name>
+    <ProjectHome />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -25,11 +26,25 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <ItemGroup />
   <ItemGroup>
-    <Compile Include="CloudWatchLogsConfigs.psd1" />
-    <Compile Include="CloudWatchLogsConfigs.psm1" />
-    <Compile Include="CloudWatchLogsConfigs.tests.ps1" />
+    <Folder Include="ActiveDirectory\" />
+    <Folder Include="Exchange\" />
+    <Folder Include="IIS\" />
+    <Folder Include="MemberServer\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ActiveDirectory\SSM-CloudWatchLogs-ActiveDirectory.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ActiveDirectory\AWS.EC2.Windows.CloudWatch.json" />
+    <Content Include="Exchange\AWS.EC2.Windows.CloudWatch.json" />
+    <Content Include="Exchange\SSM-CloudWatchLogs-Exchange.json" />
+    <Content Include="IIS\AWS.EC2.Windows.CloudWatch.json" />
+    <Content Include="IIS\SSM-CloudWatchLogs-IIS.json" />
+    <Content Include="LICENSE" />
+    <Content Include="MemberServer\AWS.EC2.Windows.CloudWatch.json" />
+    <Content Include="MemberServer\SSM-CloudWatchLogs-MemberServer.json" />
+    <Content Include="README.md" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="Build" />
